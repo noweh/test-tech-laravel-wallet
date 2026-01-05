@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\WalletTransferType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,22 @@ class WalletTransfer extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    protected $fillable = [
+        'type',
+        'recurring_start_date',
+        'recurring_end_date',
+        'recurring_frequency'
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'type' => WalletTransferType::class,
+            'recurring_start_date' => 'date',
+            'recurring_end_date' => 'date',
+        ];
+    }
 
     /**
      * @return BelongsTo<Wallet>

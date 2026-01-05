@@ -42,6 +42,7 @@
                                       required />
                         <x-input-error :messages="$errors->get('recipient_email')" class="mt-2" />
                     </div>
+
                     <div>
                         <x-input-label for="amount" :value="__('Amount (€)')" />
                         <x-text-input id="amount"
@@ -64,6 +65,57 @@
                                       required />
                         <x-input-error :messages="$errors->get('reason')" class="mt-2" />
                     </div>
+
+                    <div>
+                        <x-input-label for="is_reccuring_transfer" :value="__('Reccuring transfer')" />
+
+                        <label for="is_reccuring_transfer">
+                            {{ __('Is a reccuring transfer') }}
+                        </label>
+
+                        <input id="is_reccuring_transfer"
+                               type="checkbox"
+                               name="is_reccuring_transfer"
+                               value="1"
+                               required />
+                    </div>
+
+                    <div class="recurring hidden">
+                        <x-input-label for="start_date" :value="__('Start date')" />
+                        <x-text-input id="start_date"
+                                      class="block mt-1 w-full"
+                                      type="date"
+                                      :value="old('start_date')"
+                                      name="recurring_start_date"
+                                      required />
+                        <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
+                    </div>
+
+                    <div class="recurring hidden">
+                        <x-input-label for="end_date" :value="__('End date')" />
+                        <x-text-input id="end_date"
+                                      class="block mt-1 w-full"
+                                      type="date"
+                                      :value="old('end_date')"
+                                      name="recurring_end_date"
+                                      required />
+                        <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
+                    </div>
+
+                    <div class="recurring hidden">
+                        <x-input-label for="frequency" :value="__('Frequency (days)')" />
+                        <x-text-input id="frequency"
+                                      class="block mt-1 w-full"
+                                      type="number"
+                                      min="0"
+                                      step="1"
+                                      :value="old('frequency')"
+                                      name="recurring_frequency"
+                                      required />
+                        <x-input-error :messages="$errors->get('frequency')" class="mt-2" />
+                    </div>
+
+
 
                     <div class="flex justify-end mt-4">
                         <x-primary-button>
