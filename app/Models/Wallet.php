@@ -13,6 +13,8 @@ class Wallet extends Model
 {
     use HasFactory;
 
+    const MINIMUM_BALANCE_VALUE_BEFORE_MAIL = 10;
+
     /**
      * @return BelongsTo<User>
      */
