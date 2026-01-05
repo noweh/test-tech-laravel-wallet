@@ -22,4 +22,8 @@ test('new users can register', function () {
 
     assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
+
+    // fix bug ticket ID:1
+    $response = get('/');
+    $response->assertStatus(200);
 });
