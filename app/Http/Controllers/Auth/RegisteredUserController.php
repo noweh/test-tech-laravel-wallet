@@ -34,6 +34,9 @@ class RegisteredUserController
             'password' => Hash::make($request->password),
         ]);
 
+        // Create a User Wallet
+        $user->wallet()->create();
+
         event(new Registered($user));
 
         Auth::login($user);
