@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Mail\NotificationBalanceIsLow;
 use App\Models\User;
 use App\Models\Wallet;
 
+use Illuminate\Support\Facades\Mail;
 use function Pest\Laravel\actingAs;
 
 test('dashboard page is displayed', function () {
@@ -66,4 +68,26 @@ test('cannot send money to a friend with insufficient balance', function () {
         ->assertSessionHas('money-sent-status', 'insufficient-balance')
         ->assertSessionHas('money-sent-recipient-name', $recipient->name)
         ->assertSessionHas('money-sent-amount', 10_00);
+});
+
+test('send money but balance pass under 10€', function () {
+    Mail::fake();
+
+    $user = User::factory()->has(Wallet::factory()->poorGuy())->create();
+    $recipient = User::factory()->has(Wallet::factory())->create();
+
+    $response = actingAs($user)->post('/send-money', [
+        'recipient_email' => $recipient->email,
+        'amount' => 10, // In euros, not cents
+        'reason' => 'Just a chill guy gift',
+    ]);
+
+    $response
+        ->assertRedirect('/')
+        ->assertSessionHas('money-sent-status', 'success')
+        ->assertSessionHas('money-sent-recipient-name', $recipient->name)
+        ->assertSessionHas('money-sent-amount', 10_00);
+
+    Mail::assertSent(NotificationBalanceIsLow::class);
+
 });

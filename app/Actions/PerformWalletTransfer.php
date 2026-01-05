@@ -6,9 +6,12 @@ namespace App\Actions;
 
 use App\Enums\WalletTransactionType;
 use App\Exceptions\InsufficientBalance;
+use App\Mail\NotificationBalanceIsLow;
 use App\Models\User;
+use App\Models\Wallet;
 use App\Models\WalletTransfer;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 readonly class PerformWalletTransfer
 {
@@ -41,6 +44,13 @@ readonly class PerformWalletTransfer
                 reason: $reason,
                 transfer: $transfer
             );
+
+            // Email notification if balance is low
+            if ($sender->wallet->balance < Wallet::MINIMUM_BALANCE_VALUE_BEFORE_MAIL) {
+                Mail::to($sender->email)
+                    ->send(new NotificationBalanceIsLow())
+                ;
+            }
 
             return $transfer;
         });

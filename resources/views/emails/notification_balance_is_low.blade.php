@@ -1,0 +1,1 @@
+<p>Your user balance is low (< 10€)</p>
