@@ -22,4 +22,7 @@ test('new users can register', function () {
 
     assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
+
+    $response = get('/');
+    $response->assertStatus(200);
 });

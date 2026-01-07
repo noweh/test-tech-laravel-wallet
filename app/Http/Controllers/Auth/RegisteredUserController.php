@@ -15,6 +15,8 @@ use Illuminate\View\View;
 
 class RegisteredUserController
 {
+    public function __construct(protected readonly \App\Actions\PerformUserCreation $performUserCreation) {}
+
     public function create(): View
     {
         return view('auth.register');
@@ -28,11 +30,11 @@ class RegisteredUserController
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => strtolower($request->email),
-            'password' => Hash::make($request->password),
-        ]);
+        $user = $this->performUserCreation->execute(
+            $request->name,
+            $request->email,
+            Hash::make($request->password)
+        );
 
         event(new Registered($user));
 
