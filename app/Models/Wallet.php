@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Notifications\UserBalanceIsLow;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,5 +32,14 @@ class Wallet extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(WalletTransaction::class);
+    }
+
+    public static function booted(): void
+    {
+        static::updated(function (Wallet $wallet) {
+            if ($wallet->wasChanged('balance') && $wallet->balance < 1000) {
+                $wallet->user->notify(new UserBalanceIsLow());
+            }
+        });
     }
 }
